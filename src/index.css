@@ -1,21 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════════════════════ */
 :root {
-  --bg: #050505;
-  --bg-elevated: #0c0c0c;
-  --bg-card: #121212;
-  --text: #ffffff;
-  --text-muted: #a1a1a6;
-  --text-dim: #555558;
-  --accent: #ffffff;
-  --accent-hover: #cccccc;
-  --border: #222224;
-  --border-light: #2c2c2e;
+  --bg:            #030303;
+  --bg-elevated:   #0c0c0c;
+  --bg-card:       #111112;
+  --text:          #ffffff;
+  --text-muted:    #a1a1a6;
+  --text-dim:      #555558;
+  --accent:        #ffffff;
+  --accent-hover:  #cccccc;
+  --border:        #1e1e20;
+  --border-light:  #2a2a2c;
 
-  --font-display: 'Anton', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* ── UNIFIED display font (was split between Anton + Bebas Neue) ── */
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
 }
 
+/* ══════════════════════════════════════════════
+   RESET
+══════════════════════════════════════════════ */
 *,
 *::before,
 *::after {
@@ -34,22 +41,15 @@ body {
   color: var(--text);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+a   { color: inherit; text-decoration: none; }
+button { font-family: var(--font-mono); cursor: pointer; border: none; background: none; }
 
-button {
-  font-family: var(--font-display);
-  cursor: pointer;
-  border: none;
-  background: none;
-}
-
-/* ── Typography ───────────────── */
-
+/* ══════════════════════════════════════════════
+   TYPOGRAPHY
+══════════════════════════════════════════════ */
 .display {
   font-family: var(--font-display);
   font-size: clamp(5rem, 13vw, 12rem);
@@ -71,9 +71,10 @@ button {
   letter-spacing: 0.04em;
 }
 
+/* ── Readability fix: minimum 12px for mono text ── */
 .mono-sm {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: clamp(0.75rem, 0.7rem + 0.15vw, 0.875rem); /* 12-14px */
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -81,33 +82,126 @@ button {
 
 .mono-xs {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: clamp(0.75rem, 0.68rem + 0.1vw, 0.8rem); /* 12px min */
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-dim);
 }
 
-/* ── Film Strip ───────────────── */
+/* ══════════════════════════════════════════════
+   CHROME / GLOSSY UTILITIES  (new)
+══════════════════════════════════════════════ */
 
+/* Animated chrome shimmer gradient text */
+.text-chrome {
+  background: linear-gradient(
+    125deg,
+    #fff 0%, #c0c0c0 20%, #fff 40%,
+    #888 60%, #fff 80%, #bbb 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: chromeSweep 5s ease-in-out infinite;
+}
+
+@keyframes chromeSweep {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+/* Ghost / outline text */
+.text-outline-white {
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.3);
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Glossy card surface */
+.glossy-card {
+  position: relative;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.055) 0%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 4px;
+  backdrop-filter: blur(14px);
+  transition: border-color 0.3s, box-shadow 0.35s, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glossy-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10px; right: 10px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  pointer-events: none;
+}
+
+.glossy-card:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.55),
+    0 1px  0   rgba(255, 255, 255, 0.04);
+}
+
+/* Glossy dark button */
+.btn-glossy {
+  position: relative;
+  overflow: hidden;
+  padding: 14px 40px;
+  background: linear-gradient(160deg, #1a1a1a 0%, #252525 60%, #181818 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: clamp(0.625rem, 0.6rem + 0.1vw, 0.6875rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+
+.btn-glossy::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+}
+
+.btn-glossy::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.06) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-glossy:hover { border-color: rgba(255, 255, 255, 0.28); transform: translateY(-2px); box-shadow: 0 0 28px rgba(255, 255, 255, 0.07), 0 4px 20px rgba(0, 0, 0, 0.5); }
+.btn-glossy:hover::after { transform: translateX(100%); }
+
+/* ══════════════════════════════════════════════
+   FILM STRIP
+══════════════════════════════════════════════ */
 .film-strip-track {
   display: flex;
   gap: 3px;
-  animation: filmScroll 25s linear infinite;
+  animation: filmScroll 18s linear infinite;
   will-change: transform;
 }
 
-.film-strip-track:hover {
-  animation-play-state: paused;
-}
+.film-strip-track:hover { animation-play-state: paused; }
 
 @keyframes filmScroll {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .film-frame {
@@ -119,16 +213,8 @@ button {
   overflow: hidden;
 }
 
-.film-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.film-frame:hover img {
-  transform: scale(1.06);
-}
+.film-frame img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.film-frame:hover img { transform: scale(1.06); }
 
 .sprocket-row {
   display: flex;
@@ -140,17 +226,19 @@ button {
   justify-content: space-between;
 }
 
+/* ── Bigger sprocket holes so they read visually ── */
 .sprocket-hole {
-  width: 8px;
-  height: 5px;
+  width: 10px;
+  height: 7px;
   border-radius: 1px;
   background: #000;
   border: 1px solid #333;
   flex-shrink: 0;
 }
 
-/* ── Service Row ──────────────── */
-
+/* ══════════════════════════════════════════════
+   SERVICE ROW
+══════════════════════════════════════════════ */
 .service-row {
   display: flex;
   justify-content: space-between;
@@ -165,34 +253,17 @@ button {
 .service-row::after {
   content: '';
   position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 1px;
+  left: 0; bottom: 0;
+  width: 0; height: 1px;
   background: linear-gradient(90deg, #ffffff 0%, #444446 100%);
   transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.service-row:hover::after {
-  width: 100%;
-}
-
-.service-row:hover {
-  padding-left: 16px;
-}
-
-.service-row:hover .service-title {
-  color: #ffffff;
-}
-
-.service-row:hover .service-idx {
-  color: #ffffff;
-}
-
-.service-row:hover .service-arrow {
-  opacity: 1;
-  transform: translateX(0);
-}
+.service-row:hover::after { width: 100%; }
+.service-row:hover        { padding-left: 16px; }
+.service-row:hover .service-title { color: #ffffff; }
+.service-row:hover .service-idx   { color: #ffffff; }
+.service-row:hover .service-arrow { opacity: 1; transform: translateX(0); }
 
 .service-title {
   font-family: var(--font-display);
@@ -217,8 +288,9 @@ button {
   transition: all 0.3s ease;
 }
 
-/* ── Showreel Grid ────────────── */
-
+/* ══════════════════════════════════════════════
+   SHOWREEL GRID
+══════════════════════════════════════════════ */
 .showreel-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -234,8 +306,7 @@ button {
 }
 
 .showreel-card img {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   object-fit: cover;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   filter: grayscale(30%) brightness(0.8);
@@ -248,16 +319,14 @@ button {
 
 .showreel-card::after {
   content: '';
-  position: absolute;
-  inset: 0;
+  position: absolute; inset: 0;
   background: linear-gradient(transparent 30%, rgba(0, 0, 0, 0.85) 100%);
   pointer-events: none;
 }
 
 .showreel-card-info {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
+  bottom: 20px; left: 20px;
   z-index: 2;
 }
 
@@ -279,8 +348,7 @@ button {
 .showreel-card::before {
   content: '▶';
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(0.7);
   font-size: 1.8rem;
   color: #ffffff;
@@ -289,13 +357,11 @@ button {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.showreel-card:hover::before {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
+.showreel-card:hover::before { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-/* ── CTA Button ───────────────── */
-
+/* ══════════════════════════════════════════════
+   CTA BUTTON (existing, kept)
+══════════════════════════════════════════════ */
 .btn-cta {
   display: inline-flex;
   align-items: center;
@@ -314,29 +380,23 @@ button {
 .btn-cta::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   transition: all 0.6s ease;
 }
 
-.btn-cta:hover::before {
-  left: 100%;
-}
-
+.btn-cta:hover::before { left: 100%; }
 .btn-cta:hover {
   background: linear-gradient(90deg, #ffffff 0%, #ffffff 100%);
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
 }
 
-/* ── Section ──────────────────── */
-
-.section {
-  padding: 60px 48px;
-}
+/* ══════════════════════════════════════════════
+   SECTION LAYOUT
+══════════════════════════════════════════════ */
+.section { padding: 60px 48px; }
 
 .section-label {
   display: flex;
@@ -347,41 +407,25 @@ button {
   border-bottom: 1px solid var(--border);
 }
 
-/* ── Nav link hover ───────────── */
+.nav-link { transition: color 0.3s ease; }
+.nav-link:hover { color: var(--text) !important; }
 
-.nav-link {
-  transition: color 0.3s ease;
-}
-
-.nav-link:hover {
-  color: var(--text) !important;
-}
-
-/* ── Responsive ───────────────── */
-
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .section {
-    padding: 40px 24px;
-  }
-
-  .showreel-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .film-frame {
-    width: 160px;
-    height: 110px;
-  }
+  .section            { padding: 40px 24px; }
+  .showreel-grid      { grid-template-columns: 1fr; }
+  .film-frame         { width: 160px; height: 110px; }
 }
 
 @media (max-width: 480px) {
-  .section {
-    padding: 32px 16px;
-  }
+  .section { padding: 32px 16px; }
 }
 
-/* ── Cinematic Border Glow & Film Grain ── */
-
+/* ══════════════════════════════════════════════
+   CINEMATIC BORDER GLOW
+══════════════════════════════════════════════ */
 .cinematic-border-glow {
   position: relative;
   background: #111112;
@@ -393,52 +437,44 @@ button {
 .cinematic-border-glow::before {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(transparent,
-      rgba(255, 255, 255, 0.6) 20%,
-      transparent 40%,
-      transparent 60%,
-      rgba(255, 255, 255, 0.3) 80%,
-      transparent 100%);
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: conic-gradient(
+    transparent,
+    rgba(255, 255, 255, 0.6) 20%,
+    transparent 40%,
+    transparent 60%,
+    rgba(255, 255, 255, 0.3) 80%,
+    transparent 100%
+  );
   animation: borderSweep 8s linear infinite;
   opacity: 0;
   transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
 }
 
-.cinematic-border-glow:hover::before {
-  opacity: 1;
-}
+.cinematic-border-glow:hover::before { opacity: 1; }
 
 .cinematic-border-inner {
   position: relative;
   background: #080808;
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   z-index: 1;
 }
 
 @keyframes borderSweep {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+  0%   { transform: rotate(0deg);   }
+  100% { transform: rotate(360deg); }
 }
 
+/* ══════════════════════════════════════════════
+   FILM GRAIN
+══════════════════════════════════════════════ */
 .film-grain {
   position: fixed;
-  top: -50%;
-  left: -50%;
-  right: -50%;
-  bottom: -50%;
-  width: 200%;
-  height: 200%;
+  top: -50%; left: -50%;
+  right: -50%; bottom: -50%;
+  width: 200%; height: 200%;
   background: transparent url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E') repeat;
   opacity: 0.035;
   pointer-events: none;
@@ -447,56 +483,24 @@ button {
 }
 
 @keyframes grain {
-
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-
-  10% {
-    transform: translate(-5%, -10%);
-  }
-
-  20% {
-    transform: translate(-15%, 5%);
-  }
-
-  30% {
-    transform: translate(7%, -25%);
-  }
-
-  40% {
-    transform: translate(-5%, 25%);
-  }
-
-  50% {
-    transform: translate(-15%, 10%);
-  }
-
-  60% {
-    transform: translate(15%, 0%);
-  }
-
-  70% {
-    transform: translate(0%, 15%);
-  }
-
-  80% {
-    transform: translate(3%, 35%);
-  }
-
-  90% {
-    transform: translate(-10%, 10%);
-  }
+  0%,100% { transform: translate(0,    0);   }
+  10%     { transform: translate(-5%,  -10%); }
+  20%     { transform: translate(-15%, 5%);  }
+  30%     { transform: translate(7%,   -25%); }
+  40%     { transform: translate(-5%,  25%); }
+  50%     { transform: translate(-15%, 10%); }
+  60%     { transform: translate(15%,  0%);  }
+  70%     { transform: translate(0%,   15%); }
+  80%     { transform: translate(3%,   35%); }
+  90%     { transform: translate(-10%, 10%); }
 }
 
-
-/* Animated organic background glow blobs (same as Framer mockup) */
+/* ══════════════════════════════════════════════
+   GLOWING BLOBS  (toned down — opacity 0.05 max)
+══════════════════════════════════════════════ */
 .glowing-blob-container {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   height: 100%;
   overflow: hidden;
   z-index: 0;
@@ -507,52 +511,55 @@ button {
   position: absolute;
   border-radius: 50%;
   filter: blur(140px);
-  opacity: 0.15;
+  opacity: 0.05; /* was 0.15 — toned down to keep cinematic hardness */
   will-change: transform;
 }
 
 .blob-1 {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
-  top: -200px;
-  left: 10%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+  top: -200px; left: 10%;
   animation: float-blob-1 25s ease-in-out infinite alternate;
 }
 
 .blob-2 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(200, 200, 200, 0.3) 0%, transparent 75%);
-  top: 100px;
-  right: 15%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(200,200,200,0.3) 0%, transparent 75%);
+  top: 100px; right: 15%;
   animation: float-blob-2 20s ease-in-out infinite alternate;
 }
 
 @keyframes float-blob-1 {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  50% {
-    transform: translate(80px, 60px) scale(1.1);
-  }
-
-  100% {
-    transform: translate(-40px, 120px) scale(0.95);
-  }
+  0%   { transform: translate(0,    0)    scale(1);    }
+  50%  { transform: translate(80px, 60px) scale(1.1);  }
+  100% { transform: translate(-40px,120px) scale(0.95); }
 }
 
 @keyframes float-blob-2 {
-  0% {
-    transform: translate(0, 0) scale(0.9);
-  }
-
-  50% {
-    transform: translate(-100px, 100px) scale(1.05);
-  }
-
-  100% {
-    transform: translate(60px, -40px) scale(1);
-  }
+  0%   { transform: translate(0,     0)    scale(0.9);  }
+  50%  { transform: translate(-100px,100px) scale(1.05); }
+  100% { transform: translate(60px, -40px) scale(1);    }
 }
+
+/* ══════════════════════════════════════════════
+   HORIZONTAL CAROUSEL SCROLL FADE HINT
+══════════════════════════════════════════════ */
+.scroll-fade-right {
+  position: relative;
+}
+
+.scroll-fade-right::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 80px;
+  background: linear-gradient(to left, #030303, transparent);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ══════════════════════════════════════════════
+   HIDE SCROLLBAR UTILITY
+══════════════════════════════════════════════ */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
