@@ -229,6 +229,149 @@ function ServiceRow({ title, index, imageUrl }) {
   );
 }
 
+// --- CINEMATIC VIEWPORT HUD COMPONENT (adds visual weight to Hero) ---
+
+function CinematicViewportHUD() {
+  const [timecode, setTimecode] = useState('00:00:00:00');
+  const [currentImgIdx, setCurrentImgIdx] = useState(0);
+  const cardRef = useRef(null);
+
+  const images = [
+    '/cinematic_bg.png',
+    '/glass_sculpture.png',
+    '/girl_headphones.png'
+  ];
+
+  // Rotate images
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImgIdx((prev) => (prev + 1) % images.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Update timecode
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const hrs = now.getHours().toString().padStart(2, '0');
+      const mins = now.getMinutes().toString().padStart(2, '0');
+      const secs = now.getSeconds().toString().padStart(2, '0');
+      const frames = Math.floor(Math.random() * 24).toString().padStart(2, '0');
+      setTimecode(`${hrs}:${mins}:${secs}:${frames}`);
+    }, 41);
+    return () => clearInterval(interval);
+  }, []);
+
+  // 3D Tilt effect
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 12; // tilt amount
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 12;
+    cardRef.current.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg) translateY(-4px)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return;
+    cardRef.current.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg) translateY(0px)`;
+  };
+
+  return (
+    <div className="relative w-full max-w-[480px] aspect-[4/3] z-10 px-4 md:px-0">
+      {/* Background glow shadow */}
+      <div className="absolute -inset-4 bg-white/5 rounded-2xl blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-700 pointer-events-none" />
+      
+      {/* Viewport Frame */}
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="w-full h-full rounded border border-white/10 bg-black/60 backdrop-blur-md overflow-hidden relative transition-all duration-300 ease-out shadow-2xl flex flex-col justify-between p-4 group"
+        style={{ transformStyle: 'preserve-3d' }}
+      >
+        {/* Gloss reflection sweep */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none z-10" />
+
+        {/* Top HUD Row */}
+        <div className="flex justify-between items-center text-[10px] font-mono tracking-widest text-[#a1a1aa] z-10 select-none">
+          <div className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+            <span>REC // PLAYBACK</span>
+          </div>
+          <div>{timecode}</div>
+        </div>
+
+        {/* Cinematic Content Area */}
+        <div className="absolute inset-0 w-full h-full z-0 p-4 pt-10 pb-10">
+          <div className="relative w-full h-full overflow-hidden border border-white/5 bg-zinc-950 flex items-center justify-center">
+            {/* Widescreen cinema bar overlays */}
+            <div className="absolute top-0 left-0 right-0 h-4 bg-black/90 z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-4 bg-black/90 z-10" />
+            
+            {/* Cinematic crop widescreen aspect guide overlay lines */}
+            <div className="absolute top-4 left-0 right-0 h-px bg-white/10 z-10" />
+            <div className="absolute bottom-4 left-0 right-0 h-px bg-white/10 z-10" />
+
+            {/* Corner crop marks */}
+            <div className="absolute top-5 left-1.5 w-3 h-3 border-t border-l border-white/40 z-10" />
+            <div className="absolute top-5 right-1.5 w-3 h-3 border-t border-r border-white/40 z-10" />
+            <div className="absolute bottom-5 left-1.5 w-3 h-3 border-b border-l border-white/40 z-10" />
+            <div className="absolute bottom-5 right-1.5 w-3 h-3 border-b border-r border-white/40 z-10" />
+
+            {/* Simulated grain inside viewer */}
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')] opacity-[0.04] pointer-events-none z-10" />
+
+            {/* Sliding Image Carousel */}
+            {images.map((img, idx) => (
+              <img
+                key={img}
+                src={img}
+                alt="Cinematic still"
+                className={`absolute inset-0 w-full h-full object-cover grayscale transition-opacity duration-1000 ${currentImgIdx === idx ? 'opacity-70 scale-100' : 'opacity-0 scale-105'} transition-transform duration-[4500ms] ease-out`}
+              />
+            ))}
+
+            {/* Center play icon overlay */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+              <span className="material-symbols-outlined text-white text-5xl translate-y-0 group-hover:scale-110 transition-transform duration-300">
+                play_arrow
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom HUD Row */}
+        <div className="flex justify-between items-end text-[10px] font-mono tracking-widest text-[#a1a1aa] z-10 select-none">
+          <div className="flex flex-col gap-0.5">
+            <span>F/5.6 · 1/48s</span>
+            <span>50.0MM // ANAMORPHIC</span>
+          </div>
+          
+          {/* Active Audio Levels Visualizer HUD */}
+          <div className="flex items-end gap-[3px] h-6">
+            {Array.from({ length: 6 }).map((_, i) => {
+              const delays = ['0.1s', '0.4s', '0.2s', '0.6s', '0.3s', '0.5s'];
+              return (
+                <div
+                  key={i}
+                  className="w-[3px] bg-white rounded-t-sm"
+                  style={{
+                    height: '100%',
+                    animation: 'bounceAudio 1s ease-in-out infinite alternate',
+                    animationDelay: delays[i],
+                    transformOrigin: 'bottom'
+                  }}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // --- HOME PAGE COMPONENT ---
 
 function HomePage({ onNavigate }) {
@@ -294,13 +437,13 @@ function HomePage({ onNavigate }) {
   };
 
   return (
-    <div className="bg-[#131313] text-[#e5e2e1] min-h-screen relative overflow-hidden">
+    <div className="bg-[#050505] text-[#e5e2e1] min-h-screen relative overflow-hidden">
       
       {/* NAVIGATION DRAWER (Overlay) */}
       <AnimatePresence>
         {navOpen && (
           <motion.div 
-            className="fixed inset-0 z-[100] bg-[#131313] flex flex-col justify-center items-start p-margin-edge overflow-hidden border-r border-outline-variant"
+            className="fixed inset-0 z-[100] bg-[#050505] flex flex-col justify-center items-start p-margin-edge overflow-hidden border-r border-outline-variant"
             initial={{ opacity: 0, x: "-100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "-100%" }}
@@ -316,7 +459,7 @@ function HomePage({ onNavigate }) {
               initial="hidden"
               animate="visible"
             >
-              <motion.span variants={navItemVariants} className="font-mono text-[11px] tracking-widest text-[#8e937b] mb-4">EST. 2024</motion.span>
+              <motion.span variants={navItemVariants} className="font-mono text-[11px] tracking-widest text-[#8e8e93] mb-4">EST. 2024</motion.span>
               <nav className="flex flex-col">
                 <motion.button 
                   variants={navItemVariants}
@@ -356,7 +499,7 @@ function HomePage({ onNavigate }) {
               </nav>
               <motion.div variants={navItemVariants} className="mt-stack-md">
                 <button 
-                  className="bg-primary-fixed text-[#131313] font-mono text-xs font-bold px-8 py-4 hover:bg-white hover:text-black transition-colors"
+                  className="bg-primary-fixed text-[#050505] font-mono text-xs font-bold px-8 py-4 hover:bg-white hover:text-black transition-colors"
                   onClick={() => handleLinkClick('contact')}
                 >
                   START PROJECT
@@ -417,100 +560,94 @@ function HomePage({ onNavigate }) {
           className="opacity-30 z-[1] pointer-events-auto"
         />
 
-        <div className="flex flex-col max-w-container-max w-full z-10 mx-auto text-left items-start">
-          <motion.div 
-            className="mb-gutter"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <span className="bg-primary-fixed text-[#131313] font-mono text-[11px] font-bold px-3 py-1 inline-block uppercase tracking-wider">
-              BRANDS TALK, WE MAKE PEOPLE LISTEN
-            </span>
-          </motion.div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 max-w-container-max w-full z-10 mx-auto items-center text-left">
+          {/* Left Column: Title & CTAs */}
+          <div className="lg:col-span-7 flex flex-col items-start w-full">
+            <motion.div 
+              className="mb-gutter"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <span className="bg-primary-fixed text-[#050505] font-mono text-[11px] font-bold px-3 py-1 inline-block uppercase tracking-wider">
+                BRANDS TALK, WE MAKE PEOPLE LISTEN
+              </span>
+            </motion.div>
 
-          <motion.h2 
-            className="flex flex-col text-left w-full relative z-10"
-            variants={titleContainerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <div className="overflow-hidden py-1">
-              <motion.span 
-                variants={titleLineVariants}
-                className="block font-sans text-[36px] md:text-[80px] font-bold text-primary leading-none uppercase tracking-tighter"
-              >
-                A STUDIO BUILT FOR
-              </motion.span>
-            </div>
+            <motion.h2 
+              className="flex flex-col text-left w-full relative z-10"
+              variants={titleContainerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <div className="overflow-hidden py-1">
+                <motion.span 
+                  variants={titleLineVariants}
+                  className="block font-sans text-[36px] md:text-[80px] font-bold text-primary leading-none uppercase tracking-tighter"
+                >
+                  A STUDIO BUILT FOR
+                </motion.span>
+              </div>
+              
+              <div className="overflow-hidden py-1">
+                <motion.span 
+                  variants={titleLineVariants}
+                  className="block font-sans text-[36px] md:text-[80px] font-bold text-primary-fixed leading-none uppercase tracking-tighter"
+                >
+                  → STORYTELLERS AND
+                </motion.span>
+              </div>
+
+              <div className="overflow-hidden py-1 flex items-center flex-wrap gap-4 md:gap-6 w-full">
+                <motion.span 
+                  variants={titleLineVariants}
+                  className="font-sans text-[36px] md:text-[80px] font-bold text-primary-fixed leading-none uppercase tracking-tighter"
+                >
+                  VISIONARIES
+                </motion.span>
+
+                <motion.div 
+                  className="hidden xl:block max-w-[300px] font-mono text-[10px] text-[#8e8e93] text-left self-end pb-3 ml-auto leading-relaxed uppercase opacity-60"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8, duration: 1 }}
+                >
+                  [MISSION_LOG_V2.0]<br />
+                  ESTABLISHING VISUAL AUTHORITY THROUGH RAW NARRATIVE PRECISION. 
+                  ENGINEERED IN 2024.
+                </motion.div>
+              </div>
+            </motion.h2>
             
-            <div className="overflow-hidden py-1">
-              <motion.span 
-                variants={titleLineVariants}
-                className="block font-sans text-[36px] md:text-[80px] font-bold text-primary-fixed leading-none uppercase tracking-tighter"
-              >
-                → STORYTELLERS AND
-              </motion.span>
-            </div>
-
-            <div className="overflow-hidden py-1 flex items-center flex-wrap gap-4 md:gap-6 w-full">
-              <motion.span 
-                variants={titleLineVariants}
-                className="font-sans text-[36px] md:text-[80px] font-bold text-primary-fixed leading-none uppercase tracking-tighter"
-              >
-                VISIONARIES
-              </motion.span>
-
-              {/* Viewport overlay cell */}
-              <motion.div 
-                className="hidden md:block w-[180px] h-[100px] bg-surface-container overflow-hidden border-2 border-primary-fixed flex-shrink-0"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6, duration: 0.8 }}
-              >
-                <img 
-                  alt="" 
-                  className="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition-all duration-700 animate-pulse" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsOSb-YFOGdssW72tWiPwo00s0EKJmucI7Fi5AaE3vLlqoY6XNl5Q76L3EVWsrGIeCrl3B43TEchsel84mw_6lHFEHXo4CnK-sI613C3gthtOwpefJ8GBmgycAm62E6PiDcHdnHB8V1uu1DA2GLSO7TC__DvYLubKuR_D77NzS9uUGijBODRdfr74bXe00jrik8M97mbJ5Oxnuzz8YrnUnrIZOcgsk0GXWyJFmcCQx5dmxOxQ3ms3JWF5ImRYHHjoYCrW_t2FkDJA"
-                />
-              </motion.div>
-
-              <motion.div 
-                className="hidden xl:block max-w-[300px] font-mono text-[10px] text-secondary text-right self-end pb-3 ml-auto leading-relaxed uppercase"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.5 }}
-                transition={{ delay: 0.8, duration: 1 }}
-              >
-                [MISSION_LOG_V2.0]<br />
-                ESTABLISHING VISUAL AUTHORITY THROUGH RAW NARRATIVE PRECISION. 
-                ENGINEERED IN 2024.
-              </motion.div>
-            </div>
-          </motion.h2>
-          
-          <motion.div
-            className="flex gap-4 mt-12"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            <motion.button 
-              className="bg-primary-fixed text-[#131313] font-mono text-xs font-bold px-8 py-4 border border-primary-fixed uppercase hover:bg-transparent hover:text-primary-fixed transition-colors"
-              onClick={() => onNavigate('work')}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <motion.div
+              className="flex gap-4 mt-12"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
             >
-              Browse Showcase
-            </motion.button>
-            <motion.button 
-              className="border border-outline text-primary font-mono text-xs font-bold px-8 py-4 uppercase hover:border-primary-fixed hover:text-primary-fixed transition-colors"
-              onClick={() => handleLinkClick('contact')}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Contact Studio
-            </motion.button>
-          </motion.div>
+              <motion.button 
+                className="bg-primary-fixed text-[#050505] font-mono text-xs font-bold px-8 py-4 border border-primary-fixed uppercase hover:bg-transparent hover:text-primary-fixed transition-colors"
+                onClick={() => onNavigate('work')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Browse Showcase
+              </motion.button>
+              <motion.button 
+                className="border border-outline text-primary font-mono text-xs font-bold px-8 py-4 uppercase hover:border-primary-fixed hover:text-primary-fixed transition-colors"
+                onClick={() => handleLinkClick('contact')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Contact Studio
+              </motion.button>
+            </motion.div>
+          </div>
+
+          {/* Right Column: Interactive Viewport HUD */}
+          <div className="lg:col-span-5 w-full flex justify-center mt-8 lg:mt-0">
+            <CinematicViewportHUD />
+          </div>
         </div>
 
         {/* Marquee scroll bottom */}
@@ -526,7 +663,7 @@ function HomePage({ onNavigate }) {
       </section>
 
       {/* SECTION 2: SERVICES (Interactive List with Hover Image Reveal) */}
-      <section className="py-stack-xl px-margin-edge bg-[#0e0e0e] relative z-10" id="services">
+      <section className="py-stack-xl px-margin-edge bg-[#000000] relative z-10" id="services">
         <div className="max-w-container-max mx-auto">
           <RevealBorderBottom className="flex justify-between items-baseline mb-gutter pb-4">
             <span className="font-mono text-xs text-primary-fixed font-bold tracking-widest">[ #SERVICES ]</span>
@@ -579,7 +716,7 @@ function HomePage({ onNavigate }) {
       </section>
 
       {/* SECTION 3: ABOUT FILUMED (Bio & Technical HUD) */}
-      <section className="py-stack-xl px-margin-edge bg-[#131313] relative z-10" id="about">
+      <section className="py-stack-xl px-margin-edge bg-[#050505] relative z-10" id="about">
         <div className="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-gutter">
           <div className="md:col-span-4">
             <ScrollReveal y={20}>
@@ -628,7 +765,7 @@ function HomePage({ onNavigate }) {
       </section>
 
       {/* SECTION 4: BTS (Behind The Scenes Grid) */}
-      <section className="py-stack-xl px-margin-edge bg-[#20201f] relative z-10" id="bts">
+      <section className="py-stack-xl px-margin-edge bg-[#0c0c0d] border-t border-b border-white/5 relative z-10" id="bts">
         <div className="max-w-container-max mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-gutter">
             <ScrollReveal y={15}>
@@ -649,7 +786,7 @@ function HomePage({ onNavigate }) {
                   className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105" 
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuAp-Kn0zyfgXLEbuBAfrKVbjsnmBedXcTHuxJdA8QbMPYvexg8E_bDSDmVALC79swsQVHbGojTci-QRn5-KUyp1HOcUC8YdJequkRlI1unNZHhDf32MNxImpTyzTJK5ilSZHAqvlnLDH4sQ92xnBeESl-c-0iX2h5Gd-Ar-xUpCo0zHb-0mPKnOJVLBGVg77aH5N6OP_GCu84mPiWFfdIh4zosnk5CSj0pTZNh7w3dVNhLXhvHZXK2T1K9t7drHjsO7DnDbRHA3tx0" 
                 />
-                <div className="absolute bottom-4 left-4 font-mono text-[9px] bg-[#131313] text-primary px-3 py-1.5 border border-white/5 uppercase tracking-wider">
+                <div className="absolute bottom-4 left-4 font-mono text-[9px] bg-[#050505] text-primary px-3 py-1.5 border border-white/5 uppercase tracking-wider">
                   SCENE_01 / LENS_CALIBRATION
                 </div>
               </div>
@@ -662,7 +799,7 @@ function HomePage({ onNavigate }) {
                   className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105" 
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv2uSRn-I_qwds0uAdciL9vmJSvjbQdtSBdaT97vO_aNEMhGOpaAvnsspnGz-oHkg9PutnA70DaeWQWgL4BKjnit4EUmyT7wOrmAieGbFTSp8S09g1ukYPLVsDSVQaAdOyNS9Pzr1Y3W0nXBmctuUPP-wRk0blypy2sA3w4DFOryozDTePalPXNfULHzQngmOKYytoLeflKxnSfDyfNcVeuDhd7XE81zE3t4AIoTBXS9F2Sqr18yFxwyHuzl65tme9UvPJ4gx070I" 
                 />
-                <div className="absolute bottom-4 left-4 font-mono text-[9px] bg-[#131313] text-primary px-3 py-1.5 border border-white/5 uppercase tracking-wider">
+                <div className="absolute bottom-4 left-4 font-mono text-[9px] bg-[#050505] text-primary px-3 py-1.5 border border-white/5 uppercase tracking-wider">
                   SCENE_04 / LIGHT_RIGGING
                 </div>
               </div>
@@ -675,7 +812,7 @@ function HomePage({ onNavigate }) {
                   className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105" 
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQZ1ADn92ebyyfd54LZFv7l91S-Kq4WQJiOBWEc-ptspN2LTQo-pQkfsH_rUqre0IIW_q3aNQhGk5iXFid3BCn7ytxINBC53PLn5LEnQJrG4mFA5lR2GT_Mzh7Qc4_ISQmdLHJsauBoRFkG7IuU8ToHjUCVwSBtcquVG8wOxpNV-b4YkYIYblUZ80frdlWo8ut9W3A2L6FdJT_O0QzgyMOnHrTgwrSqJQjivBbV2H3MP9TeWwv5dZZdk81DRlPP9_CiC3g0cTs3rk" 
                 />
-                <div className="absolute bottom-4 left-4 font-mono text-[9px] bg-[#131313] text-primary px-3 py-1.5 border border-white/5 uppercase tracking-wider">
+                <div className="absolute bottom-4 left-4 font-mono text-[9px] bg-[#050505] text-primary px-3 py-1.5 border border-white/5 uppercase tracking-wider">
                   SCENE_07 / POST_PROCESSING
                 </div>
               </div>
@@ -685,7 +822,7 @@ function HomePage({ onNavigate }) {
       </section>
 
       {/* SECTION 5: CONTACT */}
-      <section className="py-stack-xl px-margin-edge bg-[#131313] relative z-10 border-t border-outline-variant" id="contact">
+      <section className="py-stack-xl px-margin-edge bg-[#050505] relative z-10 border-t border-outline-variant" id="contact">
         <div className="max-w-container-max mx-auto text-center">
           <ScrollReveal y={30}>
             <h2 className="font-sans text-[48px] md:text-[80px] font-bold text-primary mb-stack-md leading-none tracking-tighter uppercase">LET'S MAKE THEM LISTEN</h2>
@@ -715,7 +852,7 @@ function HomePage({ onNavigate }) {
           
           <ScrollReveal y={20} delay={0.2}>
             <motion.button 
-              className="w-full bg-primary-fixed text-[#131313] font-sans font-bold text-xl py-12 hover:bg-white transition-all group flex items-center justify-center gap-8 border-4 border-primary-fixed hover:border-white"
+              className="w-full bg-primary-fixed text-[#050505] font-sans font-bold text-xl py-12 hover:bg-white transition-all group flex items-center justify-center gap-8 border-4 border-primary-fixed hover:border-white"
               onClick={() => handleLinkClick('contact')}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
@@ -728,7 +865,7 @@ function HomePage({ onNavigate }) {
       </section>
 
       {/* FOOTER */}
-      <footer className="w-full px-margin-edge py-stack-md flex flex-col md:flex-row justify-between items-end border-t border-outline-variant relative z-10 bg-[#0e0e0e]">
+      <footer className="w-full px-margin-edge py-stack-md flex flex-col md:flex-row justify-between items-end border-t border-outline-variant relative z-10 bg-[#000000]">
         <div className="flex flex-col items-start gap-2">
           <span className="font-sans text-[20px] font-bold text-on-background uppercase tracking-tighter">FILUMED</span>
           <span className="font-mono text-[10px] text-secondary uppercase tracking-widest">© 2024 FILUMED PRODUCTION. ALL RIGHTS RESERVED.</span>
@@ -793,11 +930,11 @@ function WorkPage({ onNavigate }) {
   };
 
   return (
-    <div className="bg-[#131313] text-[#e5e2e1] min-h-screen relative overflow-hidden">
+    <div className="bg-[#050505] text-[#e5e2e1] min-h-screen relative overflow-hidden">
       
       {/* Top Navigation */}
       <motion.nav 
-        className="fixed top-0 w-full z-50 flex justify-between items-center px-margin-edge py-4 bg-[#131313]/90 backdrop-blur-md border-b border-outline-variant"
+        className="fixed top-0 w-full z-50 flex justify-between items-center px-margin-edge py-4 bg-[#050505]/90 backdrop-blur-md border-b border-outline-variant"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -820,7 +957,7 @@ function WorkPage({ onNavigate }) {
       <AnimatePresence>
         {drawerOpen && (
           <motion.div 
-            className="fixed inset-0 z-[60] flex flex-col justify-center p-margin-edge bg-[#131313] border-l border-outline-variant" 
+            className="fixed inset-0 z-[60] flex flex-col justify-center p-margin-edge bg-[#050505] border-l border-outline-variant" 
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -891,7 +1028,7 @@ function WorkPage({ onNavigate }) {
               </motion.div>
               <motion.button 
                 variants={navItemVariants}
-                className="mt-12 bg-primary-fixed text-[#131313] px-8 py-4 font-mono text-xs font-bold hover:bg-white hover:text-black transition-colors uppercase text-left"
+                className="mt-12 bg-primary-fixed text-[#050505] px-8 py-4 font-mono text-xs font-bold hover:bg-white hover:text-black transition-colors uppercase text-left"
                 onClick={() => { toggleDrawer(); onNavigate('home'); setTimeout(() => {
                   const contactEl = document.getElementById('contact');
                   if (contactEl) contactEl.scrollIntoView({ behavior: 'smooth' });
@@ -944,7 +1081,7 @@ function WorkPage({ onNavigate }) {
             {categories.map((cat, index) => (
               <motion.button 
                 key={index} 
-                className={`font-mono text-[11px] font-semibold px-6 py-2 border uppercase transition-all tracking-wider ${activeFilter === cat ? 'bg-primary-fixed text-[#131313] border-primary-fixed' : 'text-secondary border-outline hover:border-primary-fixed hover:text-primary-fixed'}`}
+                className={`font-mono text-[11px] font-semibold px-6 py-2 border uppercase transition-all tracking-wider ${activeFilter === cat ? 'bg-primary-fixed text-[#050505] border-primary-fixed' : 'text-secondary border-outline hover:border-primary-fixed hover:text-primary-fixed'}`}
                 onClick={() => handleFilterClick(cat)}
                 whileTap={{ scale: 0.95 }}
               >
@@ -980,14 +1117,14 @@ function WorkPage({ onNavigate }) {
                     />
                   </div>
                   <div className="p-8">
-                    <span className="inline-block bg-primary-fixed text-[#131313] font-mono text-[10px] font-bold px-2 py-1 mb-4 uppercase">{project.badge}</span>
+                    <span className="inline-block bg-primary-fixed text-[#050505] font-mono text-[10px] font-bold px-2 py-1 mb-4 uppercase">{project.badge}</span>
                     <h3 className="font-sans text-xl md:text-2xl font-bold text-primary mb-2 uppercase tracking-tight">{project.title}</h3>
                     <p className="font-mono text-[11px] text-secondary opacity-60 uppercase">{project.desc}</p>
                   </div>
                 </div>
                 {/* Visual View Project Overlay */}
                 <div className="absolute inset-0 bg-primary-fixed/90 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300 pointer-events-none">
-                  <span className="font-mono text-sm text-[#131313] font-bold tracking-wider">→ VIEW PROJECT</span>
+                  <span className="font-mono text-sm text-[#050505] font-bold tracking-wider">→ VIEW PROJECT</span>
                 </div>
               </motion.div>
             ))}
@@ -1044,17 +1181,17 @@ function WorkPage({ onNavigate }) {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-primary-fixed text-[#131313] px-margin-edge py-stack-xl flex flex-col md:flex-row justify-between items-center gap-12 max-w-container-max mx-auto mt-16">
+        <section className="bg-primary-fixed text-[#050505] px-margin-edge py-stack-xl flex flex-col md:flex-row justify-between items-center gap-12 max-w-container-max mx-auto mt-16">
           <ScrollReveal y={20}>
             <div>
-              <h2 className="font-sans text-4xl font-bold uppercase leading-tight mb-4 text-[#131313]">READY TO MAKE<br />SOME NOISE?</h2>
+              <h2 className="font-sans text-4xl font-bold uppercase leading-tight mb-4 text-[#050505]">READY TO MAKE<br />SOME NOISE?</h2>
               <p className="font-mono text-xs max-w-md text-neutral-800 uppercase leading-relaxed font-semibold">Our production slate is filling fast for Q3 2024. Secure your slot now to ensure high-fidelity delivery.</p>
             </div>
           </ScrollReveal>
           
           <ScrollReveal y={20} delay={0.1}>
             <motion.button 
-              className="w-full md:w-auto px-12 py-8 bg-[#131313] text-primary-fixed font-sans font-bold text-lg uppercase border-4 border-[#131313] hover:bg-transparent hover:text-[#131313] transition-all"
+              className="w-full md:w-auto px-12 py-8 bg-[#050505] text-primary-fixed font-sans font-bold text-lg uppercase border-4 border-[#050505] hover:bg-transparent hover:text-[#050505] transition-all"
               onClick={() => onNavigate('home')}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -1066,7 +1203,7 @@ function WorkPage({ onNavigate }) {
       </main>
 
       {/* Footer */}
-      <footer className="w-full px-margin-edge py-stack-md flex flex-col md:flex-row justify-between items-end border-t border-outline-variant relative z-10 max-w-container-max mx-auto mt-16 bg-[#0e0e0e]">
+      <footer className="w-full px-margin-edge py-stack-md flex flex-col md:flex-row justify-between items-end border-t border-outline-variant relative z-10 max-w-container-max mx-auto mt-16 bg-[#000000]">
         <div className="flex flex-col gap-4">
           <div className="font-sans text-xl text-on-background uppercase font-bold tracking-tighter">
             FILUMED

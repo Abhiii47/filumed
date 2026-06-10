@@ -563,3 +563,11 @@ button { font-family: var(--font-mono); cursor: pointer; border: none; backgroun
 ══════════════════════════════════════════════ */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ══════════════════════════════════════════════
+   CINEMATIC VIEWPORT ANIMATIONS
+   ══════════════════════════════════════════════ */
+@keyframes bounceAudio {
+  0%   { transform: scaleY(0.15); }
+  100% { transform: scaleY(0.9); }
+}
