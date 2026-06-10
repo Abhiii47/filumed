@@ -1,0 +1,558 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #050505;
+  --bg-elevated: #0c0c0c;
+  --bg-card: #121212;
+  --text: #ffffff;
+  --text-muted: #a1a1a6;
+  --text-dim: #555558;
+  --accent: #ffffff;
+  --accent-hover: #cccccc;
+  --border: #222224;
+  --border-light: #2c2c2e;
+
+  --font-display: 'Anton', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-mono);
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-display);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* ── Typography ───────────────── */
+
+.display {
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 13vw, 12rem);
+  line-height: 0.88;
+  letter-spacing: 0.03em;
+}
+
+.heading-xl {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+}
+
+.heading-lg {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.mono-sm {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.mono-xs {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── Film Strip ───────────────── */
+
+.film-strip-track {
+  display: flex;
+  gap: 3px;
+  animation: filmScroll 25s linear infinite;
+  will-change: transform;
+}
+
+.film-strip-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes filmScroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.film-frame {
+  position: relative;
+  width: 220px;
+  height: 150px;
+  background: var(--bg-card);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.film-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.film-frame:hover img {
+  transform: scale(1.06);
+}
+
+.sprocket-row {
+  display: flex;
+  gap: 3px;
+  height: 12px;
+  background: #000;
+  align-items: center;
+  padding: 0 8px;
+  justify-content: space-between;
+}
+
+.sprocket-hole {
+  width: 8px;
+  height: 5px;
+  border-radius: 1px;
+  background: #000;
+  border: 1px solid #333;
+  flex-shrink: 0;
+}
+
+/* ── Service Row ──────────────── */
+
+.service-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.service-row::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #ffffff 0%, #444446 100%);
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.service-row:hover::after {
+  width: 100%;
+}
+
+.service-row:hover {
+  padding-left: 16px;
+}
+
+.service-row:hover .service-title {
+  color: #ffffff;
+}
+
+.service-row:hover .service-idx {
+  color: #ffffff;
+}
+
+.service-row:hover .service-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.service-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.5vw, 2rem);
+  letter-spacing: 0.04em;
+  color: var(--text);
+  transition: color 0.3s;
+}
+
+.service-idx {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-right: 20px;
+  transition: color 0.3s;
+}
+
+.service-arrow {
+  color: #ffffff;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all 0.3s ease;
+}
+
+/* ── Showreel Grid ────────────── */
+
+.showreel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+}
+
+.showreel-card {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background: var(--bg-card);
+  cursor: pointer;
+}
+
+.showreel-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: grayscale(30%) brightness(0.8);
+}
+
+.showreel-card:hover img {
+  transform: scale(1.06);
+  filter: grayscale(0%) brightness(1);
+}
+
+.showreel-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 30%, rgba(0, 0, 0, 0.85) 100%);
+  pointer-events: none;
+}
+
+.showreel-card-info {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 2;
+}
+
+.showreel-card-info h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+
+.showreel-card-info span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.showreel-card::before {
+  content: '▶';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  font-size: 1.8rem;
+  color: #ffffff;
+  z-index: 3;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.showreel-card:hover::before {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ── CTA Button ───────────────── */
+
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(90deg, #ffffff 0%, #d5d5d8 100%);
+  color: #000000;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.5vw, 1.4rem);
+  letter-spacing: 0.06em;
+  padding: 16px 40px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: all 0.6s ease;
+}
+
+.btn-cta:hover::before {
+  left: 100%;
+}
+
+.btn-cta:hover {
+  background: linear-gradient(90deg, #ffffff 0%, #ffffff 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+}
+
+/* ── Section ──────────────────── */
+
+.section {
+  padding: 60px 48px;
+}
+
+.section-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 24px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Nav link hover ───────────── */
+
+.nav-link {
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--text) !important;
+}
+
+/* ── Responsive ───────────────── */
+
+@media (max-width: 768px) {
+  .section {
+    padding: 40px 24px;
+  }
+
+  .showreel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .film-frame {
+    width: 160px;
+    height: 110px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: 32px 16px;
+  }
+}
+
+/* ── Cinematic Border Glow & Film Grain ── */
+
+.cinematic-border-glow {
+  position: relative;
+  background: #111112;
+  padding: 1px;
+  overflow: hidden;
+  display: block;
+}
+
+.cinematic-border-glow::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(transparent,
+      rgba(255, 255, 255, 0.6) 20%,
+      transparent 40%,
+      transparent 60%,
+      rgba(255, 255, 255, 0.3) 80%,
+      transparent 100%);
+  animation: borderSweep 8s linear infinite;
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.cinematic-border-glow:hover::before {
+  opacity: 1;
+}
+
+.cinematic-border-inner {
+  position: relative;
+  background: #080808;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+@keyframes borderSweep {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.film-grain {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200%;
+  background: transparent url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E') repeat;
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: 9999;
+  animation: grain 8s steps(10) infinite;
+}
+
+@keyframes grain {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  10% {
+    transform: translate(-5%, -10%);
+  }
+
+  20% {
+    transform: translate(-15%, 5%);
+  }
+
+  30% {
+    transform: translate(7%, -25%);
+  }
+
+  40% {
+    transform: translate(-5%, 25%);
+  }
+
+  50% {
+    transform: translate(-15%, 10%);
+  }
+
+  60% {
+    transform: translate(15%, 0%);
+  }
+
+  70% {
+    transform: translate(0%, 15%);
+  }
+
+  80% {
+    transform: translate(3%, 35%);
+  }
+
+  90% {
+    transform: translate(-10%, 10%);
+  }
+}
+
+
+/* Animated organic background glow blobs (same as Framer mockup) */
+.glowing-blob-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.glowing-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.15;
+  will-change: transform;
+}
+
+.blob-1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+  top: -200px;
+  left: 10%;
+  animation: float-blob-1 25s ease-in-out infinite alternate;
+}
+
+.blob-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(200, 200, 200, 0.3) 0%, transparent 75%);
+  top: 100px;
+  right: 15%;
+  animation: float-blob-2 20s ease-in-out infinite alternate;
+}
+
+@keyframes float-blob-1 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(80px, 60px) scale(1.1);
+  }
+
+  100% {
+    transform: translate(-40px, 120px) scale(0.95);
+  }
+}
+
+@keyframes float-blob-2 {
+  0% {
+    transform: translate(0, 0) scale(0.9);
+  }
+
+  50% {
+    transform: translate(-100px, 100px) scale(1.05);
+  }
+
+  100% {
+    transform: translate(60px, -40px) scale(1);
+  }
+}

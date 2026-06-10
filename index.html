@@ -1,0 +1,220 @@
+<!doctype html>
+<html class="dark" lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FILUMED PRODUCTION | Cinematic Neo-Brutalist Studio</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Tailwind CSS Configuration -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary": "#2f3131",
+            "tertiary": "#ffffff",
+            "primary-fixed": "#c6f339",
+            "on-secondary-fixed": "#1a1c1c",
+            "surface-variant": "#353535",
+            "tertiary-container": "#e3e2e2",
+            "background": "#131313",
+            "primary": "#ffffff",
+            "surface-container": "#20201f",
+            "on-error-container": "#ffdad6",
+            "surface-tint": "#abd613",
+            "on-tertiary-container": "#646464",
+            "on-background": "#e5e2e1",
+            "surface-bright": "#393939",
+            "on-primary": "#283500",
+            "on-tertiary-fixed": "#1b1c1c",
+            "secondary-fixed-dim": "#c6c6c7",
+            "surface-container-low": "#1c1b1b",
+            "on-surface-variant": "#c4c9ae",
+            "surface-container-lowest": "#0e0e0e",
+            "inverse-primary": "#506600",
+            "error": "#ffb4ab",
+            "primary-container": "#c6f339",
+            "outline-variant": "#444935",
+            "secondary-fixed": "#e2e2e2",
+            "primary-fixed-dim": "#abd613",
+            "on-secondary-container": "#b4b5b5",
+            "on-secondary-fixed-variant": "#454747",
+            "surface": "#131313",
+            "on-primary-fixed-variant": "#3b4d00",
+            "secondary": "#c6c6c7",
+            "inverse-surface": "#e5e2e1",
+            "outline": "#8e937b",
+            "inverse-on-surface": "#313030",
+            "on-surface": "#e5e2e1",
+            "on-primary-fixed": "#161f00",
+            "surface-container-high": "#2a2a2a",
+            "on-error": "#690005",
+            "on-tertiary-fixed-variant": "#464747",
+            "on-tertiary": "#303031",
+            "secondary-container": "#454747",
+            "error-container": "#93000a",
+            "tertiary-fixed": "#e3e2e2",
+            "on-primary-container": "#556d00",
+            "surface-container-highest": "#353535",
+            "surface-dim": "#131313",
+            "tertiary-fixed-dim": "#c7c6c6",
+            "neon-accent": "#c8f53b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0px",
+            "lg": "0px",
+            "xl": "0px",
+            "full": "9999px"
+          },
+          "spacing": {
+            "stack-xl": "120px",
+            "unit": "4px",
+            "margin-edge": "40px",
+            "gutter": "24px",
+            "container-max": "1440px",
+            "stack-md": "64px"
+          },
+          "fontFamily": {
+            "headline-lg-mobile": ["Anton"],
+            "label-caps": ["JetBrains Mono"],
+            "body-lg": ["JetBrains Mono"],
+            "headline-md": ["Anton"],
+            "display-xl": ["Anton"],
+            "meta-code": ["JetBrains Mono"],
+            "body-md": ["JetBrains Mono"],
+            "headline-lg": ["Anton"]
+          },
+          "fontSize": {
+            "headline-lg-mobile": ["48px", { "lineHeight": "48px", "fontWeight": "400" }],
+            "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "headline-md": ["32px", { "lineHeight": "36px", "fontWeight": "400" }],
+            "display-xl": ["120px", { "lineHeight": "110px", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+            "meta-code": ["10px", { "lineHeight": "12px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "headline-lg": ["64px", { "lineHeight": "64px", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 25%, #18181b 0%, #040405 100%) fixed;
+      color: #f5f5f7;
+      overflow-x: hidden;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .marquee {
+      display: flex;
+      overflow: hidden;
+      user-select: none;
+      gap: 2rem;
+      border-top: 1px solid #262626;
+      padding-top: 1rem;
+    }
+
+    .marquee-content {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-around;
+      gap: 2rem;
+      min-width: 100%;
+      animation: scroll 20s linear infinite;
+    }
+
+    @keyframes scroll {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-100%);
+      }
+    }
+
+    .text-outline {
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.25);
+      color: transparent;
+    }
+
+    .hover-reveal-image {
+      position: fixed;
+      width: 300px;
+      height: 400px;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      transform: translate(-50%, -50%);
+    }
+
+    .service-line:hover .hover-reveal-image {
+      opacity: 1;
+    }
+
+    /* Custom scrollbar for brutalist feel */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #040405;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #ffffff 0%, #444446 100%);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #ffffff 0%, #636366 100%);
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .active-tab {
+      background: linear-gradient(90deg, #ffffff 0%, #e5e5e5 100%);
+      color: #000000;
+    }
+
+    .neon-border-hover:hover {
+      border-color: #ffffff;
+    }
+
+    .technical-divider {
+      height: 1px;
+      background-color: #262626;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body class="selection:bg-primary-fixed selection:text-on-primary-fixed">
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>
